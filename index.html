@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f4">
+  <meta name="description" content="Git verstehen, Änderungen festhalten und Projekte sicher mit GitHub teilen.">
+  <title>Git lernen – Schritt für Schritt</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d2925;
+      --muted: #64716b;
+      --green: #2f684e;
+      --green-dark: #214a38;
+      --lime: #d7ed9b;
+      --paper: #f7f8f4;
+      --line: #e4e9e1;
+      --code: #17231e;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    header {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+      font-weight: 750;
+      letter-spacing: -.03em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 11px;
+      background: var(--green);
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    nav a {
+      text-decoration: none;
+    }
+
+    nav a:hover,
+    .text-link:hover {
+      color: var(--green);
+    }
+
+    .nav-cta {
+      padding: 10px 15px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--ink);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 66px;
+      padding-block: 82px 92px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 750;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8ebc58;
+      content: "";
+    }
+
+    h1 {
+      max-width: 570px;
+      margin: 18px 0 20px;
+      font-size: clamp(42px, 6vw, 68px);
+      line-height: 1.04;
+      letter-spacing: -.065em;
+    }
+
+    h1 span {
+      color: var(--green);
+    }
+
+    .intro {
+      max-width: 475px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 18px;
+      border-radius: 9px;
+      background: var(--green);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s, transform .2s;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      background: var(--green-dark);
+    }
+
+    .text-link {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .terminal {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #293a32;
+      border-radius: 15px;
+      background: var(--code);
+      box-shadow: 0 24px 60px #25372d1c;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 46px;
+      padding-inline: 17px;
+      border-bottom: 1px solid #ffffff12;
+      color: #a8b8af;
+      font: 12px ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6b7b72;
+    }
+
+    .terminal-title {
+      margin-left: 8px;
+    }
+
+    .terminal-body {
+      padding: 26px 25px 29px;
+      font: 13px/2 ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    .terminal-body p {
+      margin: 0;
+      color: #92a399;
+    }
+
+    .terminal-body .command {
+      color: #f3f5ed;
+    }
+
+    .terminal-body .prompt {
+      color: #a8d776;
+    }
+
+    .terminal-body .comment {
+      color: #82948a;
+    }
+
+    .terminal-body .success {
+      color: #d6ed9c;
+    }
+
+    .terminal-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 25px;
+      border-top: 1px solid #ffffff12;
+      color: #c3d1c8;
+      font-size: 12px;
+    }
+
+    .terminal-footer span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #a8d776;
+    }
+
+    .steps {
+      padding-block: 67px 82px;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .section-heading h2 {
+      margin: 10px 0 0;
+      font-size: clamp(27px, 4vw, 38px);
+      letter-spacing: -.045em;
+    }
+
+    .section-heading p {
+      max-width: 340px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      min-height: 218px;
+      padding: 23px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .number {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 10px;
+      background: #eef4e5;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .card-icon {
+      color: #78917f;
+      font-size: 18px;
+    }
+
+    .card h3 {
+      margin: 21px 0 8px;
+      font-size: 17px;
+      letter-spacing: -.02em;
+    }
+
+    .card p {
+      min-height: 42px;
+      margin: 0 0 15px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    code {
+      color: var(--green-dark);
+      font: 12px ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    .card code {
+      display: inline-block;
+      padding: 6px 9px;
+      border-radius: 6px;
+      background: #f3f6f0;
+    }
+
+    .callout {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 68px;
+      padding: 28px 32px;
+      border-radius: 13px;
+      background: var(--lime);
+    }
+
+    .callout h2 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      letter-spacing: -.035em;
+    }
+
+    .callout p {
+      margin: 0;
+      color: #46573d;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .callout .button {
+      flex: 0 0 auto;
+      background: var(--green-dark);
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-block: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer a {
+      text-decoration: none;
+    }
+
+    @media (max-width: 760px) {
+      .wrap {
+        width: min(100% - 36px, 560px);
+      }
+
+      header {
+        height: 66px;
+      }
+
+      nav {
+        gap: 17px;
+      }
+
+      nav a:not(.nav-cta) {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding-block: 61px 67px;
+      }
+
+      h1 {
+        max-width: 500px;
+      }
+
+      .terminal-body {
+        padding-inline: 19px;
+        font-size: 12px;
+      }
+
+      .section-heading {
+        display: block;
+      }
+
+      .section-heading p {
+        margin-top: 12px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: auto;
+      }
+
+      .card p {
+        min-height: auto;
+      }
+
+      .callout {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 24px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .wrap {
+        width: calc(100% - 28px);
+      }
+
+      .actions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 17px;
+      }
+
+      .terminal-body {
+        overflow-x: auto;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="wrap">
+    <a class="brand" href="#" aria-label="Git lernen – Startseite">
+      <span class="brand-mark" aria-hidden="true">g</span>
+      git-lernen
+    </a>
+    <nav aria-label="Hauptnavigation">
+      <a href="#ablauf">Der Ablauf</a>
+      <a href="#loslegen">Loslegen</a>
+      <a class="nav-cta" href="#ablauf">Git entdecken <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div>
+        <span class="eyebrow">Dein Einstieg in Git</span>
+        <h1 id="hero-title">Änderungen.<br><span>Im Griff.</span></h1>
+        <p class="intro">Mit Git behältst du den Überblick über deinen Code. Speichere Fortschritte, probiere Ideen aus
+          und arbeite entspannt mit anderen zusammen.</p>
+        <div class="actions">
+          <a class="button" href="#ablauf">So funktioniert's <span aria-hidden="true">↓</span></a>
+          <a class="text-link" href="#loslegen">Zum ersten Befehl <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="terminal" aria-label="Beispiel für Git-Befehle im Terminal">
+        <div class="terminal-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="terminal-title">mein-projekt · main</span>
+        </div>
+        <div class="terminal-body">
+          <p><span class="prompt">~</span> <span class="comment"># Änderungen vorbereiten</span></p>
+          <p class="command"><span class="prompt">$</span> git add .</p>
+          <p><span class="prompt">~</span> <span class="comment"># Fortschritt festhalten</span></p>
+          <p class="command"><span class="prompt">$</span> git commit -m "Erste Version"</p>
+          <p class="success">✓ Änderungen gespeichert</p>
+        </div>
+        <div class="terminal-footer"><span></span> Alles im grünen Bereich</div>
+      </div>
+    </section>
+
+    <section class="steps wrap" id="ablauf" aria-labelledby="steps-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Einfacher als gedacht</span>
+          <h2 id="steps-title">Drei Schritte. Volle Übersicht.</h2>
+        </div>
+        <p>Git merkt sich, was du geändert hast – damit du dich auf deine Ideen konzentrieren kannst.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="card-top"><span class="number">01</span><span class="card-icon" aria-hidden="true">◷</span></div>
+          <h3>Ändern</h3>
+          <p>Arbeite ganz normal an deinen Dateien und deinem Projekt.</p>
+          <code>git status</code>
+        </article>
+        <article class="card">
+          <div class="card-top"><span class="number">02</span><span class="card-icon" aria-hidden="true">＋</span></div>
+          <h3>Vorbereiten</h3>
+          <p>Wähle aus, welche Änderungen in den nächsten Stand kommen.</p>
+          <code>git add .</code>
+        </article>
+        <article class="card">
+          <div class="card-top"><span class="number">03</span><span class="card-icon" aria-hidden="true">✓</span></div>
+          <h3>Festhalten</h3>
+          <p>Erstelle einen gespeicherten Zwischenstand mit einer kurzen Nachricht.</p>
+          <code>git commit -m "Update"</code>
+        </article>
+      </div>
+    </section>
+
+    <section class="callout wrap" id="loslegen" aria-labelledby="start-title">
+      <div>
+        <h2 id="start-title">Bereit für deinen ersten Commit?</h2>
+        <p>Starte ein Terminal in deinem Projektordner und probiere die Befehle aus.</p>
+      </div>
+      <a class="button" href="#ablauf">Zur Übersicht <span aria-hidden="true">↑</span></a>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <span>Ein kleines Projekt zum Git-Lernen.</span>
+    <a href="https://git-scm.com/book/de/v2" target="_blank" rel="noreferrer">Mehr über Git lernen ↗</a>
+  </footer>
+</body>
+
+</html>
